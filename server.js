@@ -59,6 +59,34 @@ app.use(
 app.use("/auth", authRoutes);
 
 app.use(authMiddle);
+// Add this right after session middleware
+app.get("/debug/session", (req, res) => {
+  res.json({
+    sessionID: req.sessionID,
+    session: req.session,
+    cookies: req.headers.cookie,
+    user: req.session?.user,
+    headers: {
+      origin: req.headers.origin,
+      host: req.headers.host,
+    },
+  });
+});
+
+app.get("/debug/set-test-cookie", (req, res) => {
+  req.session.test = "test-value-" + Date.now();
+  req.session.save((err) => {
+    if (err) {
+      return res.json({ error: err.message });
+    }
+    res.json({
+      message: "Cookie should be set",
+      sessionID: req.sessionID,
+      test: req.session.test,
+    });
+  });
+});
+
 app.get("/api/me", (req, res) => {
   const user = req.session.user;
   res.json({ user });
