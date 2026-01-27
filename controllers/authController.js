@@ -39,7 +39,7 @@ const login = async (req, res) => {
     return res.status(403).json({ message: "user not found" });
   }
   req.session.user = user;
-  await req.session.save();
+
   res.status(201).json({ success: true, user });
 };
 

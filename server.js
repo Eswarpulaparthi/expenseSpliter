@@ -36,7 +36,6 @@ app.use(
 
 app.use(
   session({
-    name: "MyExpenseWebAppCookieName",
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
@@ -52,12 +51,12 @@ app.use(
 );
 
 app.use("/auth", authRoutes);
+
+app.use(authMiddle);
 app.get("/api/me", (req, res) => {
   const user = req.session.user;
   res.json({ user });
 });
-app.use(authMiddle);
-
 app.use(groupRoutes);
 app.use(expenseRoutes);
 try {
