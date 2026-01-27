@@ -18,7 +18,7 @@ const sessionStore = new PostgresqlStore({
 });
 
 const app = express();
-
+app.set("trust proxy", 1);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
@@ -36,6 +36,7 @@ app.use(
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
+    proxy: true,
     cookie: {
       secure: true,
       httpOnly: true,
