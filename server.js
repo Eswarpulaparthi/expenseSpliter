@@ -22,10 +22,6 @@ app.set("trust proxy", 1);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.set("trust proxy", 1);
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
 app.use(
   cors({
     origin: [
@@ -40,52 +36,24 @@ app.use(
 
 app.use(
   session({
+    name: "MyExpenseWebAppCookieName",
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     proxy: true,
-    name: "MyExpenseWebAppCookieName",
+    store: sessionStore,
     cookie: {
       secure: true,
       httpOnly: true,
-      maxAge: 7 * 24 * 60 * 60 * 1000,
       sameSite: "none",
-      path: "/",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     },
-    store: sessionStore,
   }),
 );
 
 app.use("/auth", authRoutes);
 
 app.use(authMiddle);
-// Add this right after session middleware
-app.get("/debug/session", (req, res) => {
-  res.json({
-    sessionID: req.sessionID,
-    session: req.session,
-    cookies: req.headers.cookie,
-    user: req.session?.user,
-    headers: {
-      origin: req.headers.origin,
-      host: req.headers.host,
-    },
-  });
-});
-
-app.get("/debug/set-test-cookie", (req, res) => {
-  req.session.test = "test-value-" + Date.now();
-  req.session.save((err) => {
-    if (err) {
-      return res.json({ error: err.message });
-    }
-    res.json({
-      message: "Cookie should be set",
-      sessionID: req.sessionID,
-      test: req.session.test,
-    });
-  });
-});
 
 app.get("/api/me", (req, res) => {
   const user = req.session.user;

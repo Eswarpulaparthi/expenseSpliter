@@ -39,19 +39,8 @@ const login = async (req, res) => {
     return res.status(403).json({ message: "user not found" });
   }
   req.session.user = user;
-
-  req.session.save((err) => {
-    if (err) {
-      console.error("Session save error:", err);
-      return res.status(500).json({ error: "Failed to save session" });
-    }
-
-    console.log("Session saved successfully:", req.sessionID);
-    res.json({
-      success: true,
-      user,
-    });
-  });
+  await req.session.save();
+  res.status(201).json({ success: true, user });
 };
 
 const logout = async (req, res) => {
