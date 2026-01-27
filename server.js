@@ -37,6 +37,7 @@ app.use(
     resave: false,
     saveUninitialized: false,
     proxy: true,
+    name: "MyExpenseWebAppCookieName",
     cookie: {
       secure: true,
       httpOnly: true,
