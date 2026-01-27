@@ -52,13 +52,11 @@ app.use(
 );
 
 app.use("/auth", authRoutes);
-
-app.use(authMiddle);
-
 app.get("/api/me", (req, res) => {
   const user = req.session.user;
   res.json({ user });
 });
+app.use(authMiddle);
 
 app.use(groupRoutes);
 app.use(expenseRoutes);
