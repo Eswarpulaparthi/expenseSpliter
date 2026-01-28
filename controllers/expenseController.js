@@ -8,7 +8,7 @@ import {
 const createExpense = async (req, res) => {
   const groupId = req.params.groupId;
   const { paidBy, amount, description, category } = req.body;
-  const userId = req.session.user.id;
+  const userId = req.user.id;
 
   if (!amount || amount <= 0) {
     return res.status(400).json({ message: "Invalid amount" });
@@ -70,7 +70,7 @@ const createExpense = async (req, res) => {
 
 const getExpenses = async (req, res) => {
   const { groupId } = req.params;
-  const userId = req.session.user.id;
+  const userId = req.user.id;
   try {
     const group = await Group.findByPk(groupId, {
       include: [
@@ -121,7 +121,7 @@ const getExpenses = async (req, res) => {
 
 const getBalance = async (req, res) => {
   const { groupId } = req.params;
-  const userId = req.session.user.id;
+  const userId = req.user.id;
 
   try {
     const [totalPaid, totalShare] = await Promise.all([
@@ -157,7 +157,7 @@ const getBalance = async (req, res) => {
 
 const deleteExpenses = async (req, res) => {
   const { groupId } = req.params;
-  const userId = req.session.user.id;
+  const userId = req.user.id;
   try {
     const group = await Group.findByPk(groupId, {
       include: {

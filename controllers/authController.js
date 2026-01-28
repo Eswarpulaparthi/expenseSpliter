@@ -1,5 +1,6 @@
 import { Op } from "sequelize";
 import User from "../models/User.js";
+import jwt from "jsonwebtoken";
 
 const register = async (req, res) => {
   const name = req.body.name;
@@ -18,29 +19,44 @@ const register = async (req, res) => {
       .json({ message: "user exists with email or password" });
   }
   const newUser = await User.create({ name: name, email: email });
+  const payload = {
+    id: newUser.id,
+    name: newUser.name,
+    email: newUser.email,
+  };
+  const token = jwt.sign(payload, process.env.SESSION_SECRET, {
+    expiresIn: "7d",
+  });
   req.session.user = newUser;
 
-  res.status(201).json({ success: true });
+  res.status(201).json({ success: true, token });
 };
 
 const login = async (req, res) => {
-  console.log("hello");
-  const name = req.body.name;
-  const email = req.body.email;
+  const { name, email } = req.body;
+
   const user = await User.findOne({
     where: {
-      [Op.and]: {
-        name: name,
-        email: email,
-      },
+      name: name,
+      email: email,
     },
   });
+
   if (!user) {
     return res.status(403).json({ message: "user not found" });
   }
-  req.session.user = user;
 
-  res.status(201).json({ success: true, user });
+  const payload = {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+  };
+
+  const token = jwt.sign(payload, process.env.SESSION_SECRET, {
+    expiresIn: "7d",
+  });
+
+  res.status(200).json({ success: true, user: payload, token });
 };
 
 const logout = async (req, res) => {

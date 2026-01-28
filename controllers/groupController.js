@@ -5,9 +5,9 @@ const createGroup = async (req, res) => {
   try {
     const group = await Group.create({
       name: name,
-      created_by: req.session.user.id,
+      created_by: req.user.id,
     });
-    const user = await User.findByPk(req.session.user.id);
+    const user = await User.findByPk(req.user.id);
     await group.addMember(user);
     res.status(201).json({ success: true, group });
   } catch (error) {
@@ -17,7 +17,7 @@ const createGroup = async (req, res) => {
 
 const groups = async (req, res) => {
   try {
-    const user = await User.findByPk(req.session.user.id, {
+    const user = await User.findByPk(req.user.id, {
       include: [
         {
           model: Group,
