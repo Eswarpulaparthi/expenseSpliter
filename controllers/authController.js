@@ -19,17 +19,8 @@ const register = async (req, res) => {
       .json({ message: "user exists with email or password" });
   }
   const newUser = await User.create({ name: name, email: email });
-  const payload = {
-    id: newUser.id,
-    name: newUser.name,
-    email: newUser.email,
-  };
-  const token = jwt.sign(payload, process.env.SESSION_SECRET, {
-    expiresIn: "7d",
-  });
-  req.session.user = newUser;
 
-  res.status(201).json({ success: true, token });
+  res.status(201).json({ success: true, message: "Registration success" });
 };
 
 const login = async (req, res) => {
