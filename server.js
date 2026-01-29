@@ -1,7 +1,8 @@
 import express from "express";
 import cors from "cors";
 import sequelize from "./config/db.js";
-
+import swaggerUi from "swagger-ui-express";
+import swaggerSpec from "./swagger.js";
 import { config } from "dotenv";
 config();
 
@@ -27,7 +28,7 @@ app.use(
     allowedHeaders: ["Content-Type", "Authorization"],
   }),
 );
-
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use("/auth", authRoutes);
 
 app.use(authMiddle);
