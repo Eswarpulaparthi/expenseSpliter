@@ -12,6 +12,8 @@ https://expensespliter.onrender.com
 Swagger API Docs:  
 https://expensespliter.onrender.com/api-docs  
 
+Full-stack live URL:
+https://expense-frontend-peach-three.vercel.app
 ---
 
 ## Features
